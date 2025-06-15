@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 
+print("Hello world")
 
 class App(tk.Tk): #tento řádek a dva pod ním = window = tk.Tk()
     def __init__(self, title, size):
@@ -119,3 +120,5 @@ App("Class based app", (800,800)) #instance of the class App
 
 #Poznámky
     #musím tvořit instance classy New_skill v okně main_frame, protože to je to okno, do kterého to chci dávat, ne třeba App.  App je sice parent, ale všech funkcí, přemýšlej, kam chceš tu danou věc umístit.
+
+
