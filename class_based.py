@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 
-print("Hello world")
+print("Skibidi")
 
 class App(tk.Tk): #tento řádek a dva pod ním = window = tk.Tk()
     def __init__(self, title, size):
