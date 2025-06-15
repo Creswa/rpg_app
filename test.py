@@ -1,1 +1,3 @@
-print ("hello world")
+print ("Skibidi toaleta")
+
+print("sex")
