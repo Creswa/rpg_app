@@ -1,7 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
 
-print("Skibidi")
 
 class App(tk.Tk): #tento řádek a dva pod ním = window = tk.Tk()
     def __init__(self, title, size):
@@ -115,6 +114,7 @@ class New_skill(ttk.Frame):
 def create_new_skill():
     if main_frame is not None:
        New_skill(main_frame)
+
 # instance   
 App("Class based app", (800,800)) #instance of the class App
 
