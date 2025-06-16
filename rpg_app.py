@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from frames import TopFrame, MidFrame, BottomFrame, NewSkill
+import random
 
 
 class App(tk.Tk):
@@ -14,30 +15,24 @@ class App(tk.Tk):
 
         # Shared variables
         self.new_skill_name = tk.StringVar(value="Enter new skill name")
-        self.experience = 0
+        self.experience = tk.IntVar(value = 0)
+        self.level = tk.IntVar(value = 1)
 
         # Frames
         self.top_frame = TopFrame(self)
         self.mid_frame = MidFrame(self)
-        self.bottom_frame = BottomFrame(self, self.new_skill_name, self.create_new_skill) 
+        self.bottom_frame = BottomFrame(self, self.new_skill_name, self.create_new_skill)
         
         self.mainloop()
 
     def create_new_skill(self):
         name = self.new_skill_name.get().strip()
-        if name:  # Don't create empty skills
-            NewSkill(self.mid_frame.skills_frame, name, self.adding_exp, self.subtracting_exp)
+        if name:
+            if len(name) > 25:
+                print("Max 25 characters")
+            else:
+                NewSkill(self.mid_frame.skills_frame, name, self.level, self.experience)
 
-    def adding_exp(self):
-        self.experience += 1
-        print(self.experience)
-    
-    def subtracting_exp(self):
-        self.experience -= 1
-        print(self.experience)
-    
-    def show_exp(self):
-        print (self.experience)
 
 
 
