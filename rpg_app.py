@@ -3,29 +3,31 @@ from tkinter import ttk
 from frames import TopFrame, MidFrame, BottomFrame, NewSkill
 
 
-
-class App(tk.Tk): #tento řádek a dva pod ním = window = tk.Tk()
+class App(tk.Tk):
     def __init__(self, title, size):
-
-        #main setup
         super().__init__()
-        self.title(title) # = window.title
+
+        # Main window setup
+        self.title(title)
         self.geometry(f"{size[0]}x{size[1]}")
         self.minsize(size[0], size[1])
 
-        self.new_skill_name = tk.StringVar(value = "Enter new skill name")
+        # Shared variables
+        self.new_skill_name = tk.StringVar(value="Enter new skill name")
 
-        # widgets
-        self.TopFrame = TopFrame(self)
-        self.MidFrame = MidFrame(self)
-        self.BottomFrame = BottomFrame(self)
-
-        #run
-        self.mainloop() # = window.mainloop()
+        # Frames
+        self.top_frame = TopFrame(self)
+        self.mid_frame = MidFrame(self)
+        self.bottom_frame = BottomFrame(self, self.new_skill_name, self.create_new_skill) 
         
+        self.mainloop()
 
-# instance   
-App("Class based app", (800,800)) #instance of the class App
+    def create_new_skill(self):
+        name = self.new_skill_name.get().strip()
+        if name:  # Don't create empty skills
+            NewSkill(self.skills_frame, name)
 
 
 
+if __name__ == "__main__":
+    App("Class based app", (800, 800))
