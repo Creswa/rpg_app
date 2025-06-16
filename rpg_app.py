@@ -14,6 +14,7 @@ class App(tk.Tk):
 
         # Shared variables
         self.new_skill_name = tk.StringVar(value="Enter new skill name")
+        self.experience = 0
 
         # Frames
         self.top_frame = TopFrame(self)
@@ -25,7 +26,19 @@ class App(tk.Tk):
     def create_new_skill(self):
         name = self.new_skill_name.get().strip()
         if name:  # Don't create empty skills
-            NewSkill(self.skills_frame, name)
+            NewSkill(self.mid_frame.skills_frame, name, self.adding_exp, self.subtracting_exp)
+
+    def adding_exp(self):
+        self.experience += 1
+        print(self.experience)
+    
+    def subtracting_exp(self):
+        self.experience -= 1
+        print(self.experience)
+    
+    def show_exp(self):
+        print (self.experience)
+
 
 
 
