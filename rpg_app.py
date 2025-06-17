@@ -12,6 +12,7 @@ class App(tk.Tk):
         self.title(title)
         self.geometry(f"{size[0]}x{size[1]}")
         self.minsize(size[0], size[1])
+        self.width = size[0]
 
         # Shared variables
         self.new_skill_name = tk.StringVar(value="Enter new skill name")
@@ -31,7 +32,7 @@ class App(tk.Tk):
             if len(name) > 25:
                 print("Max 25 characters")
             else:
-                NewSkill(self.mid_frame.skills_frame, name, self.level, self.experience)
+                NewSkill(self.mid_frame.skills_frame, name, self.level, self.experience, self.width)
 
 
 

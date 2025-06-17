@@ -52,7 +52,7 @@ class BottomFrame(ttk.Frame):
 
 
 class NewSkill(ttk.Frame):
-    def __init__(self, parent, label_text, level, experience):
+    def __init__(self, parent, label_text, level, experience, window_width):
         super().__init__(parent)
         self.level = level
         self.experience = experience
@@ -60,6 +60,7 @@ class NewSkill(ttk.Frame):
         self.level_number = None
         self.experience_needed = 5 * self.level.get()
         self.color = f'#{random.randrange(256**3):06x}'
+        self.width = window_width
         self.create(label_text)
         self.pack(fill="x", pady=5)
 
@@ -67,31 +68,46 @@ class NewSkill(ttk.Frame):
 
     def adding_exp(self):
         self.experience.set(self.experience.get() + 1)
-        print(self.experience.get())
+        #print(self.experience.get())
     
     def subtracting_exp(self):
-        self.experience.set(self.experience.get() - 1)
-        print(self.experience.get())
+        if self.level.get() == 1 and self.experience.get() == 0:
+            pass
+        elif self.level.get() >= 1 and self.experience.get() >= 0:
+            self.experience.set(self.experience.get() - 1)
+
+        #print(self.experience.get())
 
     def update_level_bar(self, *args):
-        if self.level_bar:
-            self.level_bar.config(
+        if self.canvas_bar:
+            self.canvas_bar.itemconfigure(
+                self.exp_bar,
                 text = f"XP {self.experience.get()}/{self.experience_needed}"
-            )
+                )
         if self.experience.get() == self.experience_needed:
             self.level.set(self.level.get() + 1)
             self.experience.set(0)
-            self.update_level()    
+            self.update_level()
+        elif self.experience.get() < 0:
+            if self.level.get() > 1:
+                self.level.set(self.level.get() - 1)
+                self.experience.set(5*self.level.get())
+                self.update_level()
+            else:
+                pass
+        
 
     def update_level(self, *args):
         self.experience_needed = 5 * self.level.get() #updates level and needed exp
+        print(self.experience_needed)
         if self.level_number:
             self.level_number.config(
                 text = f"Level: {self.level.get()}"
 
             )
-            self.level_bar.config(
-               text = f"XP{self.experience.get()}/{self.experience_needed}" 
+            self.canvas_bar.itemconfigure(
+                self.exp_bar,
+               text = f"XP {self.experience.get()}/{self.experience_needed}" 
             )
 
     def create(self, label_text):
@@ -108,12 +124,22 @@ class NewSkill(ttk.Frame):
         self.level_number = ttk.Label(new_skill_frame, text=f"Level: {self.level.get()}", anchor="w", borderwidth=1, relief="solid")
         plus_button = ttk.Button(new_skill_frame, text="+", command = self.adding_exp)
         minus_button = ttk.Button(new_skill_frame, text="-", command = self.subtracting_exp)
-        self.level_bar = tk.Label(new_skill_frame, text = f"XP{self.experience.get()}/{self.experience_needed}", anchor="center", borderwidth=2,relief="solid", background = self.color)
+        #self.level_bar = tk.Label(new_skill_frame, text = f"XP{self.experience.get()}/{self.experience_needed}", anchor="center", borderwidth=2,relief="solid", background = self.color)
 
+        bar_width = self.width
+        bar_height = 20
+        # progress bar
+        self.canvas_bar = tk.Canvas(new_skill_frame, width= bar_width, height= bar_height, bg="white", highlightthickness=0)
+        self.canvas_bar.grid(row=1, columnspan = 4, sticky="ew")
+        fill_width = int(bar_width/4) # místo 4 *exp
+        color = self.color #barva přiřazená skillu
+        self.canvas_bar.create_rectangle(0, 0, bar_width, bar_height, fill="#ddd")
+        self.canvas_bar.create_rectangle(0, 0, fill_width, bar_height, fill=color) 
+        self.exp_bar = self.canvas_bar.create_text(bar_width//2, bar_height//2, text=f"XP{self.experience.get()}/{self.experience_needed}", fill="black") , # text = to, co je teď na labelu dole
 
         skill_name.grid(row=0, column=0, sticky="nsew")
         self.level_number.grid(row=0, column=1, sticky="nsew")
         plus_button.grid(row=0, column=2, sticky="nsew")
         minus_button.grid(row=0, column=3, sticky="nsew")
-        self.level_bar.grid(row=1, column=0, columnspan=4, sticky="nsew")
+        #self.level_bar.grid(row=1, column=0, columnspan=4, sticky="nsew")
         

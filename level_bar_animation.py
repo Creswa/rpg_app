@@ -10,7 +10,7 @@ class App(tk.Tk):
         self.title(title)
         self.geometry(f"{size[0]}x{size[1]}")
         self.minsize(size[0], size[1])
-
+        self.width = size[0]
         self.columnconfigure((0), weight = 1, uniform = "a")
 
         
