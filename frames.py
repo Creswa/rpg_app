@@ -49,11 +49,12 @@ class BottomFrame(ttk.Frame):
         self.columnconfigure(0, weight=2)
         self.columnconfigure((1, 2), weight=1, uniform="a")
 
-        skill_name = ttk.Entry(self, textvariable=self.skill_name_var)
-        add_skill_button = ttk.Button(self, text='Add skill', command=self.add_skill_callback)
-        delete_mode_button = ttk.Button(self, text='Delete mode')  # placeholder
+        self.skill_name_entry = ttk.Entry(self, textvariable=self.skill_name_var)
 
-        skill_name.grid(column=0, sticky="nsew")
+        add_skill_button = ttk.Button(self, text='Add skill', command=self.add_skill_callback)
+        delete_mode_button = ttk.Button(self, text='Delete mode') 
+
+        self.skill_name_entry.grid(column=0, sticky="nsew")
         add_skill_button.grid(row=0, column=1, sticky="nsew")
         delete_mode_button.grid(row=0, column=2, sticky="nsew")
 
@@ -78,7 +79,7 @@ class NewSkill(ttk.Frame):
         self.create(label_text)
         self.pack(fill="x", pady=5)
 
-        self.experience.trace_add("write", self.update_level_bar)
+        self.experience.trace_add("write", self.update_exp_bar)
         self.level.trace_add("write", self.update_total_level_text)
 
 
@@ -94,44 +95,34 @@ class NewSkill(ttk.Frame):
         elif self.level.get() >= 1 and self.experience.get() >= 0:
             self.experience.set(self.experience.get() - 1)
 
-    def update_level_bar(self, *args):
+    def update_exp_bar(self, *args):
         """Update the progress bar and handle level up/down."""
-        if self.canvas_bar:
-            self.canvas_bar.itemconfigure(
-                self.exp_bar,
-                text = f"XP {self.experience.get()}/{self.experience_needed}"
-                )
-        if self.experience.get() == self.experience_needed:
-            self.level.set(self.level.get() + 1)
-            self.experience.set(0)
-            self.update_level()
-        elif self.experience.get() < 0:
-            if self.level.get() > 1:
-                self.level.set(self.level.get() - 1)
-                self.experience.set(5*self.level.get())
-                self.update_level()
-            else:
-                messagebox.showwarning("Error", "You are already at minimum level.")
-                return
-            
-        # Update bar fill
+        
+        # Logic handled in skill_manager
+        experience_new, level_new, experience_needed_new = self.skill_manager.update_exp_bar(self.experience.get(), self.experience_needed, self.level.get())
+        self.experience.set(experience_new)
+        self.level.set(level_new)
+        self.experience_needed = experience_needed_new
+
+        # Error if level below zero
+        if self.level.get() < 1:
+            messagebox.showwarning("Error", "You are already at minimum level.")
+            return
+        
+        # Update bar fill and XP text
         self.fill_width = int((self.bar_width / self.experience_needed) * self.experience.get()) if self.experience.get() > 0 else 0
         self.canvas_bar.coords(self.filled_part, 0, 0, self.fill_width, self.bar_height)
 
-        
-
-    def update_level(self, *args):
-        """Update level label and experience needed."""
-        self.experience_needed = self.NEEDED_EXP_CONSTANT * self.level.get()  # updates level and needed exp, constant = 5
         if self.level_number:
             self.level_number.config(text = f"Level: {self.level.get()}")
             self.canvas_bar.itemconfigure(
-                self.exp_bar,
-                text = f"XP {self.experience.get()}/{self.experience_needed}" 
-            )
+                self.exp_bar, 
+                text = f"XP {self.experience.get()}/{self.experience_needed}"
+                )
 
 
     def create(self, label_text: tk.StringVar):
+        """Creating the instance of NewSkill"""
         self.new_skill_frame = ttk.Frame(self, height=50, borderwidth=5, relief="solid")
         self.new_skill_frame.pack_propagate(False)
         self.new_skill_frame.pack(fill="x")
@@ -165,4 +156,4 @@ class NewSkill(ttk.Frame):
         self.plus_button.grid(row=0, column=2, sticky="nsew")
         self.minus_button.grid(row=0, column=3, sticky="nsew")
 
-        self.update_level()        
+        self.update_exp_bar
