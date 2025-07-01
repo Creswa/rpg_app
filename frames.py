@@ -58,7 +58,7 @@ class BottomFrame(ttk.Frame):
         add_skill_button.grid(row=0, column=1, sticky="nsew")
         delete_mode_button.grid(row=0, column=2, sticky="nsew")
 
-
+#sex
 class NewSkill(ttk.Frame):
     """A frame representing a single skill with level and experience tracking."""
 
