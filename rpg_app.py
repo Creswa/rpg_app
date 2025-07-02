@@ -49,7 +49,7 @@ class App(tk.Tk):
         level = tk.IntVar(value = 1)
         self.skills[name] = NewSkill(self.mid_frame.skills_frame, name, self.width, level,  self.total_level, self.update_total_level_text)
         self.update_total_level_text()  # Recalculate the sum of all levels)
-        self.new_skill_name.set("") # Clear input
+        self.new_skill_name.set("Enter name of a new skill") # Clear input
 
 
     def update_total_level_text(self, *args):

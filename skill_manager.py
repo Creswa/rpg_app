@@ -5,7 +5,7 @@ class SkillManager:
         self.skills = {}
     
     def add_skill(self, name, level=1):
-        if not name:
+        if not name or name == "Enter name of a new skill":
             return "empty"
         if len(name) > 25:
             return "long"

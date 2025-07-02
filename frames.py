@@ -43,28 +43,48 @@ class BottomFrame(ttk.Frame):
         super().__init__(parent)
         self.skill_name_var = skill_name_var
         self.add_skill_callback = add_skill_callback
+        self.default_entry_text = "Enter name of a new skill"
         self.create_layout_and_widgets()
 
     def create_layout_and_widgets(self):
         self.columnconfigure(0, weight=2)
         self.columnconfigure((1, 2), weight=1, uniform="a")
 
+        # Entry field plus dissapearing text stuff
+        self.skill_name_var.set(self.default_entry_text)
+        def focused_in(event):
+            self.skill_name_var.set("")
+            print("Focused in")
+
+        def focused_out(event):
+            if not self.skill_name_var.get():
+                self.skill_name_var.set("Enter name of a new skill")
+                event.widget.config(foreground="grey")
+                print("Focused out")
+            
+
         self.skill_name_entry = ttk.Entry(self, textvariable=self.skill_name_var)
-
-        add_skill_button = ttk.Button(self, text='Add skill', command=self.add_skill_callback)
-        delete_mode_button = ttk.Button(self, text='Delete mode') 
-
         self.skill_name_entry.grid(column=0, sticky="nsew")
+        self.skill_name_entry.bind("<FocusIn>", focused_in)
+        self.skill_name_entry.bind("<FocusOut>", focused_out)
+        self.skill_name_entry.bind("<Return>", lambda event: self.add_skill_callback() )
+
+
+        # Buttons
+        add_skill_button = ttk.Button(self, text='Add skill', command = self.add_skill_callback)
         add_skill_button.grid(row=0, column=1, sticky="nsew")
+
+        delete_mode_button = ttk.Button(self, text='Delete mode') 
         delete_mode_button.grid(row=0, column=2, sticky="nsew")
 
-#sex
+
+
 class NewSkill(ttk.Frame):
     """A frame representing a single skill with level and experience tracking."""
 
     NEEDED_EXP_CONSTANT = 5
 
-    def __init__(self, parent, label_text: str, window_width: int, level: tk.IntVar, total_level: tk.IntVar, update_total_level_call):
+    def __init__(self, parent, new_skill_name: str, window_width: int, level: tk.IntVar, total_level: tk.IntVar, update_total_level_call):
         super().__init__(parent)
         self.skill_manager = SkillManager()
         self.experience = tk.IntVar(value = 0)
@@ -76,7 +96,7 @@ class NewSkill(ttk.Frame):
         self.width = window_width
         self.total_level = total_level
         self.update_total_level_text = update_total_level_call
-        self.create(label_text)
+        self.create(new_skill_name)
         self.pack(fill="x", pady=5)
 
         self.experience.trace_add("write", self.update_exp_bar)
@@ -121,7 +141,7 @@ class NewSkill(ttk.Frame):
                 )
 
 
-    def create(self, label_text: tk.StringVar):
+    def create(self, new_skill_name: tk.StringVar):
         """Creating the instance of NewSkill"""
         self.new_skill_frame = ttk.Frame(self, height=50, borderwidth=5, relief="solid")
         self.new_skill_frame.pack_propagate(False)
@@ -132,7 +152,7 @@ class NewSkill(ttk.Frame):
         self.new_skill_frame.columnconfigure((2, 3), weight=1, uniform="a")
         self.new_skill_frame.rowconfigure((0, 1), weight=1)
 
-        self.skill_name = ttk.Label(self.new_skill_frame, text=label_text, anchor="w", borderwidth=1, relief="solid")
+        self.skill_name = ttk.Label(self.new_skill_frame, text=new_skill_name, anchor="w", borderwidth=1, relief="solid")
         self.level_number = ttk.Label(self.new_skill_frame, text=f"Level: {self.level.get()}", anchor="w", borderwidth=1, relief="solid")
         self.plus_button = ttk.Button(self.new_skill_frame, text="+", command = self.adding_exp)
         self.minus_button = ttk.Button(self.new_skill_frame, text="-", command = self.subtracting_exp)
