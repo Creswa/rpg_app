@@ -1,0 +1,22 @@
+{
+    "Strength": {
+        "level": 3,
+        "experience": 12
+    },
+    "Agility": {
+        "level": 2,
+        "experience": 7
+    },
+    "Intelligence": {
+        "level": 5,
+        "experience": 20
+    },
+    "Skibidi": {
+        "level": 2,
+        "experience": 4
+    },
+    "Sex": {
+        "level": 1,
+        "experience": 0
+    }
+}
