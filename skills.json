@@ -13,10 +13,14 @@
     },
     "Skibidi": {
         "level": 2,
-        "experience": 4
+        "experience": 8
     },
     "Sex": {
-        "level": 1,
-        "experience": 0
+        "level": 2,
+        "experience": 7
+    },
+    "adafawfawf": {
+        "level": 2,
+        "experience": 2
     }
 }

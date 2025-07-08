@@ -3,10 +3,12 @@ from tkinter import messagebox
 from frames import TopFrame, MidFrame, BottomFrame, NewSkill
 from skill_manager import SkillManager
 import json
+import hashlib
+import os
 
-with open("skills.json", "r") as file:
+DATA_FILE = "/Users/danielgros/Python/rpg_app/skills.json"
+with open(DATA_FILE, "r") as file:
     data = json.load(file)
-
 
 class App(tk.Tk):
     """Main application window for the RPG Skill Tracker."""
@@ -21,6 +23,7 @@ class App(tk.Tk):
         
         # Loaded data
         self.data = data
+        self.original_file_hash = self.get_file_hash(DATA_FILE)
 
         # Skill Manager
         self.skill_manager = SkillManager(self.data)
@@ -45,7 +48,7 @@ class App(tk.Tk):
             experience.set(experience_loaded)
             self.load_skills(name, level, experience)
         self.update_total_level_text()
-        
+
         # Packing
         self.top_frame.pack(fill = "x")
         self.mid_frame.pack(expand=True, fill="both")
@@ -55,9 +58,10 @@ class App(tk.Tk):
         """Creates the skills based on save file"""
         NewSkill(self.mid_frame.skills_frame, name, self.width, level,  self.total_level, self.update_total_level_text, experience, self.data)
     
-    def on_closing(self):
+
+    def on_closing(self):   
         if messagebox.askokcancel("Quit", "Do you want to quit?"):
-            app.destroy()
+                app.destroy()
 
     def create_new_skill(self):
         """Creation of new skill"""
@@ -87,9 +91,39 @@ class App(tk.Tk):
         self.top_frame.total_level_label.config(text=f"Level: {self.total_level.get()}")
 
 
-
-
 if __name__ == "__main__":
     app = App("Class based app", (800, 800))
     app.protocol("WM_DELETE_WINDOW", app.on_closing)
     app.mainloop()
+
+    # Possible asking if user wants to save data on quitting, add inside ^^^
+    """
+    def on_closing(self):
+        try:
+            current_file_hash = self.get_file_hash(DATA_FILE)
+        except FileNotFoundError:
+            current_file_hash = None
+        
+        if current_file_hash != self.original_file_hash:
+            result = messagebox.askyesnocancel(
+                "The save file has changed\n",
+                "Do you want to save your new skills?\n"
+                "Yes = Save your version\n"
+                "No = Exit without saving\n"
+                "Cancel = Stay in app"
+            )
+            if result is True:
+                self.skill_manager.save_data()
+                app.destroy()
+            elif result is False:
+                app.destroy()
+            else:
+                return
+        else:
+            self.skill_manager.save_data()
+            app.destroy()
+    ############        
+    def get_file_hash(self, filepath):
+        with open(filepath, "rb") as file:
+            return hashlib.md5(file.read()).hexdigest()
+    """
